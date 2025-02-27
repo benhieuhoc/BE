@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const TaskUserSchema = new mongoose.Schema({
-    project_id:{
+    task_id:{
         ref: "Task",
         type: mongoose.SchemaTypes.ObjectId,
     },  

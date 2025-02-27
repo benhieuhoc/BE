@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const TaskSchema = new mongoose.Schema({
     nametask:{type: String, require: true},
+    id_project:{
+        href: "Project",
+        type: mongoose.SchemaTypes.ObjectId,
+    },
     description:{type: String},
     pre_task:{type: String},
     next_task:{type: String},

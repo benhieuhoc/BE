@@ -1,6 +1,5 @@
 const Prj_u = require('../models/project_user');
 const Project = require('../models/project');
-const project = require('../models/project');
 
 class ProjectController {
 
@@ -33,7 +32,7 @@ class ProjectController {
     }
 
     // GET /project/get_by_autho
-    getbyauthor(req,res,nexxt){
+    getbyauthor(req,res,next){
         const id = req.body;
         try{
             Project.find({author: id})
@@ -49,6 +48,65 @@ class ProjectController {
         }
     }
 
+    // POST /project/create
+    async create(req,res,next){
+        const {name, author, description} = req.body;
+        try{
+            if(!name || !author){
+                res.status(400).json({message: "Vui lòng cập nhật đầy đủ thông tin!"});
+            }
+            let createProject = await Project.create({name, author, description})
+
+            if(createProject){
+                res.status(200).json({
+                    message: "Thêm dự án thành công",
+                    data: createProject
+                })
+            }else{
+                res.status(404).json({message: "Thêm dự án thất bại"})
+            }
+        }catch(error){
+            console.error(error);
+            res.status(500).json({ message: 'Lỗi máy chủ' }); 
+        }
+    }
+
+    // PUT /project/update
+    update(req,res,next){
+        try{
+            Project.findOneAndUpdate({_id: req.body.id}, req.body)
+            .then((project) => {
+                if(!project){
+                    return res.status(404).json({message: "Không tìm thấy dự án!"});
+                }
+                else{
+                    return res.status(200).json({message: "Cập nhật thành công", project});
+                }
+            })
+        }catch(error){
+            console.error(error);
+            res.status(500).json({message: "Lỗi máy chủ!"});
+        }
+    }
+
+    // DELETE /project/delete/:id
+    delete(req,res,next){
+        const id = req.params.id;
+        try{
+            Project.deleteOne({_id: id})
+            .then((project) => {
+                if(!project){
+                    res.status(404).json({message: "Không tìm thấy dự án, xóa thát bại!"});
+                }
+                else{
+                    res.status(200).json({message: "Xóa dự án thành công"});
+                }
+            })
+        }catch(error){
+            console.error(error);
+            res.status(500).json({message: "Lỗi máy chủ!"});
+        }
+    }
 }
 
 module.exports = new ProjectController;
