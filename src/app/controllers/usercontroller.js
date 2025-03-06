@@ -48,6 +48,41 @@ class UserController {
         }
     };
 
+    // POST user/singin
+    async singin(req,res,next){
+        const {email, password, name, phone} = req.body;
+        try{
+            User.findOne({email: email})
+            .then((user) => {
+                if(user){
+                    return res.status(400).json({ 
+                        success: false, 
+                        message: 'Tài Khoản Đã Tồn Tại! Vui Lòng Chọn Email Khác!' 
+                    });
+                }
+            });
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const FormData = newUser({
+                email: email,
+                password: hashedPassword,
+                name: name,
+                phone: phone,
+            });
+            FormData.save({})
+            .then((user) => {
+                return res.status(201).json({ 
+                    success: true, 
+                    message: 'Đăng ký tài khoản thành công', 
+                    data: user
+                })
+            })
+            .catch(next);
+        }catch(error){
+            console.error(error);
+            res.status(500).json({ message: 'Lỗi máy chủ'})
+        }
+    }
+
     // POST user/logout
     logout(req,res,next){
         try{
