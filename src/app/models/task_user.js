@@ -13,4 +13,4 @@ const TaskUserSchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model("Project_User", TaskUserSchema);
+module.exports = mongoose.model("Project_Task", TaskUserSchema);

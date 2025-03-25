@@ -3,6 +3,22 @@ const Project = require('../models/project');
 
 class ProjectController {
 
+    // GET /project/get_all
+    getall(req,res,next){
+        try{
+            Project.find({})
+            .then((project) => {
+                if(!project){
+                    return res.status(404).json({message: "Không tìm thấy dự án!"});
+                }
+                res.status(200).json({message: "Đã tìm thấy toàn bộ", data: project});
+            })
+        }catch(error){
+            console.error(error);
+            res.status(500).json({ message: 'Lỗi máy chủ' });
+        }
+    }
+
     // GET /projetc/get_my_project
     getmy(req,res,next){
         const id = req.body;

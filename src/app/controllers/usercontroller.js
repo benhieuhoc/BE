@@ -2,6 +2,7 @@ const User = require ('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const JWT_SECRET = process.env.JWT_SECRET;
 
 class UserController {
 
@@ -12,14 +13,16 @@ class UserController {
             User.findOne({email: email})
             .then(async(user) => {
                 if(!user){
-                    return res.status(401).json({massage:"Email khồn tồn tại"});
+                    return res.status(401).json({massage:"Email không tồn tại"});
                 }
                 const saltRounds = 10;
                 const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-                // console.log("admin.password: ",admin.password);
+                // console.log("admin.password: ",user.password);
                 // console.log("password: ",password);
                 // console.log("hashedPassword: ",hashedPassword);
+                console.log('JWT_SECRET:', JWT_SECRET);
+                console.log('EXPIRESIN:', process.env.EXPIRESIN);
                 
                 const isMatch = await bcrypt.compare(password, user.password);
                 if (!isMatch) {
@@ -29,12 +32,13 @@ class UserController {
 
                  // Tạo token JWT
                  const token = jwt.sign(
-                    { adminId: admin._id, email: admin.email },
+                    { userId: user._id, email: user.email },
                     JWT_SECRET,
                     { expiresIn: process.env.EXPIRESIN } // Thời gian hết hạn của token
                 );
+                console.log("token:",token);
                 
-                res.cookie('token: ', token, {
+                res.cookie('token', token, {
                     httpOnly: true, // Bảo mật hơn khi chỉ có server mới có thể truy cập cookie này
                     secure: process.env.NODE_ENV === 'production', // Chỉ cho phép cookie qua HTTPS nếu là production
                     maxAge: parseInt(process.env.MAXAGE), // 1 giờ
@@ -50,8 +54,10 @@ class UserController {
 
     // POST user/singin
     async singin(req,res,next){
+        console.log("req.body: ",req.body);
         const {email, password, name, phone} = req.body;
         try{
+            console.log("Kiểm tra email tồn tại!");
             User.findOne({email: email})
             .then((user) => {
                 if(user){
@@ -62,12 +68,14 @@ class UserController {
                 }
             });
             const hashedPassword = await bcrypt.hash(password, 10);
-            const FormData = newUser({
+            console.log("hashedPassword: ",hashedPassword);
+            const FormData = new User({
                 email: email,
                 password: hashedPassword,
                 name: name,
                 phone: phone,
             });
+            console.log("FormData: ",FormData);
             FormData.save({})
             .then((user) => {
                 return res.status(201).json({ 
