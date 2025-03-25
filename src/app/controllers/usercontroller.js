@@ -6,6 +6,22 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 class UserController {
 
+    // GET user/get_all
+    getall(req,res,next){
+        try{
+            User.find({})
+            .then((user) => {
+                if(!user){
+                    return res.status(404).json({message: "Không tìm thấy người dùng!"});
+                }
+                res.status(200).json({message: "Đã tìm thấy toàn bộ", data: user});
+            })
+        }catch(error){
+            console.error(error);
+            res.status(500).json({ message: 'Lỗi máy chủ' });
+        };
+    };
+
     // POST user/login
     login(req,res,next){
         const {email, password} = req.body;

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ProjectSchema = new mongoose.Schema({
     nameproject:{type: String, require: true},
-    author:{
+    author_id:{
         ref: "User",
         type: mongoose.SchemaTypes.ObjectId,
     },

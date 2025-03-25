@@ -66,12 +66,13 @@ class ProjectController {
 
     // POST /project/create
     async create(req,res,next){
-        const {name, author, description} = req.body;
+        const {nameproject, author_id, description} = req.body;
+        console.log(req.body);
         try{
-            if(!name || !author){
+            if(!nameproject || !author_id){
                 res.status(400).json({message: "Vui lòng cập nhật đầy đủ thông tin!"});
             }
-            let createProject = await Project.create({name, author, description})
+            let createProject = await Project.create({nameproject, author_id, description})
 
             if(createProject){
                 res.status(200).json({
