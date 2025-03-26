@@ -90,8 +90,9 @@ class ProjectController {
 
     // PUT /project/update
     update(req,res,next){
+        console.log(req.body);
         try{
-            Project.findOneAndUpdate({_id: req.body.id}, req.body)
+            Project.findOneAndUpdate({_id: req.body._id}, req.body)
             .then((project) => {
                 if(!project){
                     return res.status(404).json({message: "Không tìm thấy dự án!"});
