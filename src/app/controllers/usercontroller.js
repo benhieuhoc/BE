@@ -71,7 +71,7 @@ class UserController {
     // POST user/singin
     async singin(req,res,next){
         console.log("req.body: ",req.body);
-        const {email, password, name, phone} = req.body;
+        const {email, password, Name, phone} = req.body;
         try{
             console.log("Kiểm tra email tồn tại!");
             User.findOne({email: email})
@@ -88,7 +88,7 @@ class UserController {
             const FormData = new User({
                 email: email,
                 password: hashedPassword,
-                name: name,
+                name: Name,
                 phone: phone,
             });
             console.log("FormData: ",FormData);
