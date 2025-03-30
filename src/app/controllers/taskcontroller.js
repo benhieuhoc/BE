@@ -3,6 +3,21 @@ const Task_u = require('../models/task_user');
 
 class TaskController {
 
+    // GET /task/get_all
+    getall(req,res,next){
+        try{
+            Task.find({})
+            .then((task) => {
+                if(!task){
+                    return res.status(404).json({message: "Không tìm thấy dự án!"});
+                }
+                res.status(200).json({message: "Đã tìm thấy toàn bộ", data: task});
+            })
+        }catch(error){
+            console.error(error);
+            res.status(500).json({ message: 'Lỗi máy chủ' });
+        }
+    }
     // GET /task/show_task_by_Task
     showbypj(req,res,next){
         const id = req.body.id;
@@ -94,12 +109,13 @@ class TaskController {
 
     // POST /task/create
     async create(req,res,next){
-        const {nametask, id_task, description, pre_task, next_task, day_start, time, day_end, status} = req.body;
+        const {nametask, user_id, description, pre_task, next_task, day_start, time, day_end, status} = req.body;
+        console.log(req.body);
         try{
-            if(!nametask || !day_start || !time){
-                res.status(400).json({message: "Vui lòng cập nhật đầy đủ thông tin!"});
-            }
-            let createTask = await Task.create({nametask, id_task, description, pre_task, next_task, day_start, time, day_end, status})
+            // if(!nametask || !day_start || !time){
+            //     res.status(400).json({message: "Vui lòng cập nhật đầy đủ thông tin!"});
+            // }
+            let createTask = await Task.create({nametask, user_id, description, pre_task, next_task, day_start, time, day_end, status})
             if(createTask){
                 res.status(200).json({
                     message: "Thêm nhiệm vụ thành công",
@@ -135,8 +151,9 @@ class TaskController {
 
     // PUT /task/update
     update(req,res,next){
+        console.log(req.body);
         try{
-            Task.findOneAndUpdate({_id: req.body.id}, req.body)
+            Task.findOneAndUpdate({_id: req.body._id}, req.body)
             .then((task) => {
                 if(!task){
                     return res.status(404).json({message: "Không tìm thấy nhiệm vụ!"});

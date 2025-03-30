@@ -6,6 +6,10 @@ const TaskSchema = new mongoose.Schema({
         href: "Project",
         type: mongoose.SchemaTypes.ObjectId,
     },
+    user_id:{
+        ref: "User",
+        type: mongoose.SchemaTypes.ObjectId,
+    },
     description:{type: String},
     pre_task:{type: String},
     next_task:{type: String},

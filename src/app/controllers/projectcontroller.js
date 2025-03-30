@@ -110,6 +110,7 @@ class ProjectController {
     // DELETE /project/delete/:id
     delete(req,res,next){
         const id = req.params.id;
+        console.log("_id: ", req.params.id);
         try{
             Project.deleteOne({_id: id})
             .then((project) => {
