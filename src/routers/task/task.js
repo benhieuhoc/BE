@@ -3,7 +3,7 @@ const router = express.Router();
 const taskcontroller = require('../../app/controllers/taskcontroller');
 
 router.get("/get_all", taskcontroller.getall);
-router.get("/show_task_by_project", taskcontroller.showbypj);
+router.get("/show_task_by_user", taskcontroller.showbyuser);
 router.get("/show_by_pjandmem", taskcontroller.showbypjandmem);
 router.get("/show_your_task", taskcontroller.yourtask);
 router.post("/create", taskcontroller.create);

@@ -18,40 +18,13 @@ class ProjectController {
             res.status(500).json({ message: 'Lỗi máy chủ' });
         }
     }
-
-    // GET /projetc/get_my_project
-    getmy(req,res,next){
-        const id = req.body;
-        try{
-            let Projectlist;
-            Prj_u.find({user_id: id})
-            .then((prj_u) => {
-                if(!prj_u){
-                    return res.status(404).json({message: "Không tìm thấy dự án!"})
-                }
-                const listId = prj_u.map(x => x.project_id);
-                Project.find({ _id: { $in: listId }})
-                .then((project) => {
-                    Projectlist = project.map(prj => ({
-                        id: prj._id,
-                        nameproject: prj.nameproject,
-                        author: prj.author,
-                        description: prj.description,
-                    }))
-                })
-            });
-            res.status(200).json({message:"Đã tìm thấy toàn bộ", data: Projectlist});
-        }catch(error){
-            console.error(error);
-            res.status(500).json({ message: 'Lỗi máy chủ' });
-        }
-    }
-
-    // GET /project/get_by_autho
+    
+    // GET /project/get_by_author
     getbyauthor(req,res,next){
-        const id = req.body;
+        const id = req.query.id;
+        // console.log('req: ',req.query);
         try{
-            Project.find({author: id})
+            Project.find({author_id: id})
             .then((project) => {
                 if(!project){
                     return res.status(404).json({message: "Không tìm thấy dự án!"});
@@ -66,13 +39,13 @@ class ProjectController {
 
     // POST /project/create
     async create(req,res,next){
-        const {nameproject, author_id, description} = req.body;
+        const {author_id, nameproject, description, category_id, dateEnd} = req.body;
         console.log(req.body);
         try{
             if(!nameproject || !author_id){
                 res.status(400).json({message: "Vui lòng cập nhật đầy đủ thông tin!"});
             }
-            let createProject = await Project.create({nameproject, author_id, description})
+            let createProject = await Project.create({author_id, nameproject, description, category_id, dateEnd})
 
             if(createProject){
                 res.status(200).json({

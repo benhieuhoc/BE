@@ -18,17 +18,18 @@ class TaskController {
             res.status(500).json({ message: 'Lỗi máy chủ' });
         }
     }
-    // GET /task/show_task_by_Task
-    showbypj(req,res,next){
-        const id = req.body.id;
+    // GET /task/show_task_by_user
+    showbyuser(req,res,next){
+        const id = req.query.id;
+        console.log('req task: ',req.query);
         try{
-            Task.find({id_Task: id})
+            Task.find({user_id: id})
             .then((task) => {
                 if(!task){
                     return res.status(404).json({message: "Không tìm thấy nhiệm vụ!"})
                 }else{
                     return res.status(200).json({
-                        message: "Đã tìm thấy các nhiệm vụ thuộc dự án này",
+                        message: "Đã tìm thấy các nhiệm vụ ",
                         data: task,
                     })
                 }

@@ -6,7 +6,13 @@ const ProjectSchema = new mongoose.Schema({
         ref: "User",
         type: mongoose.SchemaTypes.ObjectId,
     },
-   description:{type: String, require: true}
+    category_id:{
+        ref: "Category",
+        type: mongoose.SchemaTypes.ObjectId,
+    },
+   description:{type: String, require: true},
+   dateEnd:{type: Date, require: true},
+
 },{
     timestamps: true,
 });
