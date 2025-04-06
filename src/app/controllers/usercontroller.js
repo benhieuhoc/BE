@@ -8,13 +8,36 @@ class UserController {
 
     // GET user/get_all
     getall(req,res,next){
+        const email = req.query.email;
         try{
-            User.find({})
+            let query = {};
+            if (email) {
+                query.email = { $regex: email, $options: 'i' };
+            }
+            User.find(query)
             .then((user) => {
                 if(!user){
                     return res.status(404).json({message: "Không tìm thấy người dùng!"});
                 }
                 res.status(200).json({message: "Đã tìm thấy toàn bộ", data: user});
+            })
+        }catch(error){
+            console.error(error);
+            res.status(500).json({ message: 'Lỗi máy chủ' });
+        };
+    };
+
+    // GET user/get_by_id
+    getbyid(req,res,next){
+        const id = req.query.id;
+        // console.log('req: ',req.query);
+        try{
+            User.findById(id)
+            .then((user) => {
+                if(!user){
+                    return res.status(404).json({message: "Không tìm thấy người dùng!"});
+                }
+                res.status(200).json({message: "Đã tìm thấy người dùng", data: user})
             })
         }catch(error){
             console.error(error);

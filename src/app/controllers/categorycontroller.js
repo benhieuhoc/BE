@@ -10,7 +10,7 @@ class CategoryController {
                 if(!category){
                     return res.status(404).json({message: "Không tìm thấy danh mục!"});
                 }
-                console.log(category);
+                // console.log(category);
                 res.status(200).json({message: "Đã tìm thấy toàn bộ danh mục", data: category});
             })
         }catch(error){

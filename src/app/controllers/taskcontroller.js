@@ -18,12 +18,41 @@ class TaskController {
             res.status(500).json({ message: 'Lỗi máy chủ' });
         }
     }
+    // GET /task/get_by_id
+    getbyid(req,res,next){
+        const id = req.query.id;
+        console.log('req: ',req.query);
+        try{
+            Task.findById(id)
+            .then((task) => {
+                if(!task){
+                    return res.status(404).json({message: "Không tìm thấy nhiệm vụ!"})
+                }else{
+                    return res.status(200).json({
+                        message: "Đã tìm thấy nhiệm vụ",
+                        data: task,
+                    })
+                }
+            })
+        }catch(error){
+            console.error(error);
+            return res.status(500).json({message: "Lỗi máy chủ "})
+        }
+    }
     // GET /task/show_task_by_user
     showbyuser(req,res,next){
         const id = req.query.id;
-        console.log('req task: ',req.query);
+        const date = req.query.date;
+        console.log('req task', req.query)
         try{
-            Task.find({user_id: id})
+            let filter = {
+                user_id: id
+            };
+            if (date) {
+                filter.day_end = { $gt: new Date(date) };
+            }
+            console.log("filter", filter)
+            Task.find(filter)
             .then((task) => {
                 if(!task){
                     return res.status(404).json({message: "Không tìm thấy nhiệm vụ!"})
@@ -110,13 +139,13 @@ class TaskController {
 
     // POST /task/create
     async create(req,res,next){
-        const {nametask, user_id, description, pre_task, next_task, day_start, time, day_end, status} = req.body;
+        const {nametask, user_id, description, day_start, day_end} = req.body;
         console.log(req.body);
         try{
-            // if(!nametask || !day_start || !time){
+            // if(!nametask || !day_start || !day_end){
             //     res.status(400).json({message: "Vui lòng cập nhật đầy đủ thông tin!"});
             // }
-            let createTask = await Task.create({nametask, user_id, description, pre_task, next_task, day_start, time, day_end, status})
+            let createTask = await Task.create({nametask, user_id, description, day_start, day_end})
             if(createTask){
                 res.status(200).json({
                     message: "Thêm nhiệm vụ thành công",
@@ -169,6 +198,24 @@ class TaskController {
         }
     }
 
+    // PUT /task/update_status
+    updateStatus(req,res,next){
+        console.log(req.body);
+        try{
+            Task.findOneAndUpdate({_id: req.body._id}, req.body)
+            .then((task) => {
+                if(!task){
+                    return res.status(404).json({message: "Không tìm thấy nhiệm vụ!"});
+                }
+                else{
+                    return res.status(200).json({message: "Cập nhật thành công", data: task});
+                }
+            })
+        }catch(error){
+            console.error(error);
+            res.status(500).json({message: "Lỗi máy chủ!"});
+        }
+    }
 }
 
 module.exports = new TaskController;
