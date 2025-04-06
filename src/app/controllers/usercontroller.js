@@ -47,6 +47,7 @@ class UserController {
 
     // POST user/login
     login(req,res,next){
+        console.log("req", req.body)
         const {email, password} = req.body;
         try{
             User.findOne({email: email})
@@ -94,7 +95,7 @@ class UserController {
     // POST user/singin
     async singin(req,res,next){
         console.log("req.body: ",req.body);
-        const {email, password, Name, phone} = req.body;
+        const {username, email, name, phone, password} = req.body;
         try{
             console.log("Kiểm tra email tồn tại!");
             User.findOne({email: email})
@@ -109,10 +110,11 @@ class UserController {
             const hashedPassword = await bcrypt.hash(password, 10);
             console.log("hashedPassword: ",hashedPassword);
             const FormData = new User({
+                username: username,
                 email: email,
-                password: hashedPassword,
-                name: Name,
+                name: name,
                 phone: phone,
+                password: hashedPassword,
             });
             console.log("FormData: ",FormData);
             FormData.save({})

@@ -88,6 +88,8 @@ class ProjectController {
             }
 
             Project.find(filter)
+                .populate('author_id member_id category_id')
+                .populate('task_id')
                 .then((projects) => {
                     if (!projects || projects.length === 0) {
                         return res.status(404).json({ message: "Không tìm thấy dự án!" });
